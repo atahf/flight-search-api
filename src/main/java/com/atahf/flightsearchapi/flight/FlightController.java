@@ -4,6 +4,7 @@ import com.atahf.flightsearchapi.airport.AirportService;
 import com.atahf.flightsearchapi.flight.FlightDto.NewFlightDto;
 import com.atahf.flightsearchapi.flight.FlightDto.RoundTripDto;
 import com.atahf.flightsearchapi.flight.FlightDto.SingleTripDto;
+import com.atahf.flightsearchapi.utils.NotFoundException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class FlightController {
     }
 
     @GetMapping("all")
-    public ResponseEntity<List<Flight>> getAllFlights(
+    public ResponseEntity<?> getAllFlights(
             @RequestParam(required = false, value = "from") Long originID,
             @RequestParam(required = false, value = "to") Long destinationID
     ) {
@@ -52,16 +53,20 @@ public class FlightController {
             }
 
             return ResponseEntity.ok(flightService.getAllFlightsFromNTo(originID, destinationID));
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     @GetMapping("{ID}")
-    public ResponseEntity<Flight> getFlight(@PathVariable Long ID) {
+    public ResponseEntity<?> getFlight(@PathVariable Long ID) {
         try {
             Flight flight = flightService.getFlight(ID);
             return ResponseEntity.ok(flight);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -82,6 +87,8 @@ public class FlightController {
         try {
             flightService.deleteFlight(ID);
             return ResponseEntity.ok("Flight Successfully Deleted!");
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }

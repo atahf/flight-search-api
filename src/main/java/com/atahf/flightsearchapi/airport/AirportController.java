@@ -1,6 +1,7 @@
 package com.atahf.flightsearchapi.airport;
 
 import com.atahf.flightsearchapi.airport.AirportDto.*;
+import com.atahf.flightsearchapi.utils.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -34,10 +35,12 @@ public class AirportController {
     }
 
     @GetMapping("{ID}")
-    public ResponseEntity<Airport> getAirport(@PathVariable Long ID) {
+    public ResponseEntity<?> getAirport(@PathVariable Long ID) {
         try {
             Airport airport = airportService.getAirport(ID);
             return ResponseEntity.ok(airport);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -58,6 +61,8 @@ public class AirportController {
         try {
             airportService.editAirport(airportEditDto);
             return ResponseEntity.ok("Airport Successfully Edited!");
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -68,6 +73,8 @@ public class AirportController {
         try {
             airportService.deleteAirport(ID);
             return ResponseEntity.ok("Airport Successfully Deleted!");
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }

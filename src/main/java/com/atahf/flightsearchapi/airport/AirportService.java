@@ -2,6 +2,7 @@ package com.atahf.flightsearchapi.airport;
 
 import com.atahf.flightsearchapi.airport.AirportDto.AirportEditDto;
 import com.atahf.flightsearchapi.airport.AirportDto.AirportInfoDto;
+import com.atahf.flightsearchapi.utils.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,7 @@ public class AirportService {
     public void editAirport(AirportEditDto airportEditDto) throws Exception {
         Airport airport = airportDao.findByID(airportEditDto.getID());
 
-        if(airport == null) throw new Exception("Airport Not Found!");
+        if(airport == null) throw new NotFoundException("Airport Not Found!");
 
         airport.setCity(airportEditDto.getCity());
     }
@@ -37,7 +38,7 @@ public class AirportService {
     public void deleteAirport(Long ID) throws Exception {
         Airport airport = airportDao.findByID(ID);
 
-        if(airport == null) throw new Exception("Airport Not Found!");
+        if(airport == null) throw new NotFoundException("Airport Not Found!");
 
         airportDao.delete(airport);
     }
@@ -45,7 +46,7 @@ public class AirportService {
     public Airport getAirport(Long ID) throws Exception {
         Airport airport = airportDao.findByID(ID);
 
-        if(airport == null) throw new Exception("Airport Not Found!");
+        if(airport == null) throw new NotFoundException("Airport Not Found!");
 
         return airport;
     }

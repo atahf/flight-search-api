@@ -7,6 +7,7 @@ import com.atahf.flightsearchapi.flight.FlightDto.NewFlightDto;
 import com.atahf.flightsearchapi.flight.FlightDto.NewFlightInfoDto;
 import com.atahf.flightsearchapi.flight.FlightDto.RoundTripDto;
 import com.atahf.flightsearchapi.flight.FlightDto.SingleTripDto;
+import com.atahf.flightsearchapi.utils.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +38,7 @@ public class FlightService {
     public void deleteFlight(Long ID) throws Exception {
         Flight flight = flightDao.findByID(ID);
 
-        if(flight == null) throw new Exception("Flight Not Found!");
+        if(flight == null) throw new NotFoundException("Flight Not Found!");
 
         flightDao.delete(flight);
     }
@@ -45,7 +46,7 @@ public class FlightService {
     public Flight getFlight(Long ID) throws Exception {
         Flight flight = flightDao.findByID(ID);
 
-        if(flight == null) throw new Exception("Airport Not Found!");
+        if(flight == null) throw new NotFoundException("Airport Not Found!");
 
         return flight;
     }
@@ -57,7 +58,7 @@ public class FlightService {
     public List<Flight> getAllFlightsFrom(Long originID) throws Exception {
         Airport airport = airportDao.findByID(originID);
 
-        if(airport == null) throw new Exception("Airport Not Found!");
+        if(airport == null) throw new NotFoundException("Airport Not Found!");
 
         return flightDao.findAllByOrigin(airport);
     }
@@ -65,17 +66,17 @@ public class FlightService {
     public List<Flight> getAllFlightsTo(Long destinationID) throws Exception {
         Airport airport = airportDao.findByID(destinationID);
 
-        if(airport == null) throw new Exception("Airport Not Found!");
+        if(airport == null) throw new NotFoundException("Airport Not Found!");
 
         return flightDao.findAllByDestination(airport);
     }
 
     public List<Flight> getAllFlightsFromNTo(Long originID, Long destinationID) throws Exception {
         Airport airportOrigin = airportDao.findByID(originID);
-        if(airportOrigin == null) throw new Exception("Origin Airport Not Found!");
+        if(airportOrigin == null) throw new NotFoundException("Origin Airport Not Found!");
 
         Airport airportDestination = airportDao.findByID(destinationID);
-        if(airportDestination == null) throw new Exception("Destination Airport Not Found!");
+        if(airportDestination == null) throw new NotFoundException("Destination Airport Not Found!");
 
         return flightDao.findAllByOriginAndDestination(airportOrigin, airportDestination);
     }
