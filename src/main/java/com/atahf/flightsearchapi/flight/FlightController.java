@@ -90,7 +90,7 @@ public class FlightController {
     }
 
     @ApiOperation(value = "Airport updating method")
-    @DeleteMapping ("update")
+    @PutMapping ("update")
     public ResponseEntity<String> updateFlight(@ApiParam(value = "Updated Flight Object", required = true) @RequestBody FlightUpdateDto flightUpdateDto) {
         try {
             flightService.updateFlight(flightUpdateDto);
