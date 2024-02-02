@@ -1,6 +1,6 @@
 package com.atahf.flightsearchapi.airport;
 
-import com.atahf.flightsearchapi.airport.AirportDto.AirportEditDto;
+import com.atahf.flightsearchapi.airport.AirportDto.AirportUpdateDto;
 import com.atahf.flightsearchapi.airport.AirportDto.AirportInfoDto;
 import com.atahf.flightsearchapi.utils.NotFoundException;
 import org.springframework.stereotype.Service;
@@ -26,12 +26,12 @@ public class AirportService {
     }
 
     @Transactional
-    public void editAirport(AirportEditDto airportEditDto) throws Exception {
-        Airport airport = airportDao.findByID(airportEditDto.getID());
+    public void updateAirport(AirportUpdateDto airportUpdateDto) throws Exception {
+        Airport airport = airportDao.findByID(airportUpdateDto.getID());
 
         if(airport == null) throw new NotFoundException("Airport Not Found!");
 
-        airport.setCity(airportEditDto.getCity());
+        airport.setCity(airportUpdateDto.getCity());
     }
 
     @Transactional

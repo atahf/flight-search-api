@@ -2,6 +2,8 @@ package com.atahf.flightsearchapi.airport;
 
 import com.atahf.flightsearchapi.airport.AirportDto.*;
 import com.atahf.flightsearchapi.utils.NotFoundException;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -15,6 +17,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping("api/v1/airport")
+@Api(value = "Flight Search API - Airport Endpoints documentation")
 public class AirportController {
 
     private final AirportService airportService;
@@ -24,6 +27,7 @@ public class AirportController {
         this.airportService = airportService;
     }
 
+    @ApiOperation(value = "Airports List Method")
     @GetMapping("all")
     public ResponseEntity<List<Airport>> getAll() {
         try {
@@ -33,7 +37,7 @@ public class AirportController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
+    @ApiOperation(value = "Airport by ID Method")
     @GetMapping("{ID}")
     public ResponseEntity<?> getAirport(@PathVariable Long ID) {
         try {
@@ -46,6 +50,7 @@ public class AirportController {
         }
     }
 
+    @ApiOperation(value = "New Airport adding method")
     @PostMapping("add")
     public ResponseEntity<Airport> addAirport(@RequestBody AirportInfoDto airportInfoDto) {
         try {
@@ -56,10 +61,11 @@ public class AirportController {
         }
     }
 
-    @PutMapping("edit")
-    public ResponseEntity<String> editAirport(@RequestBody AirportEditDto airportEditDto) {
+    @ApiOperation(value = "Airport updating method")
+    @PutMapping("update")
+    public ResponseEntity<String> editAirport(@RequestBody AirportUpdateDto airportUpdateDto) {
         try {
-            airportService.editAirport(airportEditDto);
+            airportService.updateAirport(airportUpdateDto);
             return ResponseEntity.ok("Airport Successfully Edited!");
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -68,6 +74,7 @@ public class AirportController {
         }
     }
 
+    @ApiOperation(value = "Airport deleting method")
     @DeleteMapping ("delete/{ID}")
     public ResponseEntity<String> deleteAirport(@PathVariable Long ID) {
         try {

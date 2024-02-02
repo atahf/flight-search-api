@@ -6,7 +6,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AirportEditDto {
+public class AirportUpdateDto {
     private Long ID;
     private String city;
 }

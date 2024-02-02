@@ -5,6 +5,7 @@ import com.atahf.flightsearchapi.flight.FlightDto.NewFlightDto;
 import com.atahf.flightsearchapi.flight.FlightDto.RoundTripDto;
 import com.atahf.flightsearchapi.flight.FlightDto.SingleTripDto;
 import com.atahf.flightsearchapi.utils.NotFoundException;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,7 @@ public class FlightController {
         this.airportService = airportService;
     }
 
+    @ApiOperation(value = "Airport list method")
     @GetMapping("all")
     public ResponseEntity<?> getAllFlights(
             @RequestParam(required = false, value = "from") Long originID,
@@ -60,6 +62,7 @@ public class FlightController {
         }
     }
 
+    @ApiOperation(value = "Airport by ID method")
     @GetMapping("{ID}")
     public ResponseEntity<?> getFlight(@PathVariable Long ID) {
         try {
@@ -72,6 +75,7 @@ public class FlightController {
         }
     }
 
+    @ApiOperation(value = "New Airport adding method")
     @PostMapping("add")
     public ResponseEntity<Flight> addFlight(@RequestBody NewFlightDto newFlightDto) {
         try {
@@ -82,6 +86,7 @@ public class FlightController {
         }
     }
 
+    @ApiOperation(value = "Airport deleting method")
     @DeleteMapping ("delete/{ID}")
     public ResponseEntity<String> deleteFlight(@PathVariable Long ID) {
         try {
@@ -94,6 +99,7 @@ public class FlightController {
         }
     }
 
+    @ApiOperation(value = "Airport list of single-trips method")
     @GetMapping("search/single")
     public ResponseEntity<List<Flight>> getAllSingleTrips(
             @RequestParam(value = "from") Long originID,
@@ -109,6 +115,7 @@ public class FlightController {
         }
     }
 
+    @ApiOperation(value = "Airport list of round-trips method")
     @GetMapping("search/round")
     public ResponseEntity<List<Flight>> getAllRoundTrips(
             @RequestParam(value = "from") Long originID,
