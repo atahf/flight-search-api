@@ -3,7 +3,7 @@ package com.atahf.flightsearchapi.flight;
 import javax.persistence.*;
 
 import com.atahf.flightsearchapi.airport.Airport;
-import com.atahf.flightsearchapi.flight.FlightDto.NewFlightInfoDto;
+import com.atahf.flightsearchapi.flight.FlightDto.NewFlightDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "Flight Search API Flight model documentation", description = "Flight Model")
+@ApiModel(value = "Flight Model", description = "Flight Model Documentation")
 public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,11 +36,11 @@ public class Flight {
     @ApiModelProperty(value = "price of flight object")
     private double price;
 
-    public Flight(NewFlightInfoDto newFlightInfoDto) {
-        this.origin = newFlightInfoDto.getOrigin();
-        this.destination = newFlightInfoDto.getDestination();
-        this.departureDate = newFlightInfoDto.getDepartureDate();
-        this.returnDate = newFlightInfoDto.getReturnDate();
-        this.price = newFlightInfoDto.getPrice();
+    public Flight(NewFlightDto newFlightDto, Airport origin, Airport destination) {
+        this.origin = origin;
+        this.destination = destination;
+        this.departureDate = newFlightDto.getDepartureDate();
+        this.returnDate = newFlightDto.getReturnDate();
+        this.price = newFlightDto.getPrice();
     }
 }

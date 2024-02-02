@@ -4,7 +4,6 @@ import com.atahf.flightsearchapi.airport.Airport;
 import com.atahf.flightsearchapi.airport.AirportDao;
 
 import com.atahf.flightsearchapi.flight.FlightDto.NewFlightDto;
-import com.atahf.flightsearchapi.flight.FlightDto.NewFlightInfoDto;
 import com.atahf.flightsearchapi.flight.FlightDto.RoundTripDto;
 import com.atahf.flightsearchapi.flight.FlightDto.SingleTripDto;
 import com.atahf.flightsearchapi.utils.NotFoundException;
@@ -27,8 +26,7 @@ public class FlightService {
     public Flight addFlight(NewFlightDto newFlightDto) {
         Airport origin = airportDao.findByID(newFlightDto.getOriginAirport());
         Airport destination = airportDao.findByID(newFlightDto.getDestinationAirport());
-        NewFlightInfoDto newFlightInfoDto = new NewFlightInfoDto(newFlightDto, origin, destination);
-        Flight newFlight = new Flight(newFlightInfoDto);
+        Flight newFlight = new Flight(newFlightDto, origin, destination);
 
         flightDao.save(newFlight);
         return newFlight;

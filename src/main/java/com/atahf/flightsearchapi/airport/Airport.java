@@ -13,7 +13,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "Flight Search API Airport model documentation", description = "Airport Model")
+@ApiModel(value = "Airport Model", description = "Airport Model Documentation")
 public class Airport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
