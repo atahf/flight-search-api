@@ -34,7 +34,7 @@ public class FlightController {
     }
 
     @GetMapping("all")
-    public ResponseEntity<List<Flight>> getAllFrom(
+    public ResponseEntity<List<Flight>> getAllFlights(
             @RequestParam(required = false, value = "from") Long originID,
             @RequestParam(required = false, value = "to") Long destinationID
     ) {
@@ -43,7 +43,7 @@ public class FlightController {
                 return ResponseEntity.ok(flightService.getAllFlights());
             }
 
-            if(destinationID == null) {
+            if(originID != null && destinationID == null) {
                 return ResponseEntity.ok(flightService.getAllFlightsFrom(originID));
             }
 
