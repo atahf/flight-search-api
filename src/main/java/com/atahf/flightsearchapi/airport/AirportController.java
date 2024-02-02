@@ -4,6 +4,7 @@ import com.atahf.flightsearchapi.airport.AirportDto.*;
 import com.atahf.flightsearchapi.utils.NotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -39,7 +40,7 @@ public class AirportController {
     }
     @ApiOperation(value = "Airport by ID Method")
     @GetMapping("{ID}")
-    public ResponseEntity<?> getAirport(@PathVariable Long ID) {
+    public ResponseEntity<?> getAirport(@ApiParam(value = "Airport ID", required = true) @PathVariable Long ID) {
         try {
             Airport airport = airportService.getAirport(ID);
             return ResponseEntity.ok(airport);
@@ -52,7 +53,7 @@ public class AirportController {
 
     @ApiOperation(value = "New Airport adding method")
     @PostMapping("add")
-    public ResponseEntity<Airport> addAirport(@RequestBody AirportInfoDto airportInfoDto) {
+    public ResponseEntity<Airport> addAirport(@ApiParam(value = "New Airport Object", required = true) @RequestBody AirportInfoDto airportInfoDto) {
         try {
             Airport newAirport = airportService.addAirport(airportInfoDto);
             return ResponseEntity.ok(newAirport);
@@ -63,7 +64,7 @@ public class AirportController {
 
     @ApiOperation(value = "Airport updating method")
     @PutMapping("update")
-    public ResponseEntity<String> editAirport(@RequestBody AirportUpdateDto airportUpdateDto) {
+    public ResponseEntity<String> editAirport(@ApiParam(value = "Updated Airport Object", required = true) @RequestBody AirportUpdateDto airportUpdateDto) {
         try {
             airportService.updateAirport(airportUpdateDto);
             return ResponseEntity.ok("Airport Successfully Edited!");
@@ -76,7 +77,7 @@ public class AirportController {
 
     @ApiOperation(value = "Airport deleting method")
     @DeleteMapping ("delete/{ID}")
-    public ResponseEntity<String> deleteAirport(@PathVariable Long ID) {
+    public ResponseEntity<String> deleteAirport(@ApiParam(value = "ID of Airport to be deleted", required = true) @PathVariable Long ID) {
         try {
             airportService.deleteAirport(ID);
             return ResponseEntity.ok("Airport Successfully Deleted!");

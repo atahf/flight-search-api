@@ -6,6 +6,7 @@ import com.atahf.flightsearchapi.flight.FlightDto.RoundTripDto;
 import com.atahf.flightsearchapi.flight.FlightDto.SingleTripDto;
 import com.atahf.flightsearchapi.utils.NotFoundException;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,8 +39,8 @@ public class FlightController {
     @ApiOperation(value = "Airport list method")
     @GetMapping("all")
     public ResponseEntity<?> getAllFlights(
-            @RequestParam(required = false, value = "from") Long originID,
-            @RequestParam(required = false, value = "to") Long destinationID
+            @ApiParam(value = "Origin Airport ID") @RequestParam(required = false, value = "from") Long originID,
+            @ApiParam(value = "Destination Airport ID") @RequestParam(required = false, value = "to") Long destinationID
     ) {
         try {
             if(originID == null && destinationID == null) {
@@ -64,7 +65,7 @@ public class FlightController {
 
     @ApiOperation(value = "Airport by ID method")
     @GetMapping("{ID}")
-    public ResponseEntity<?> getFlight(@PathVariable Long ID) {
+    public ResponseEntity<?> getFlight(@ApiParam(value = "Flight ID", required = true) @PathVariable Long ID) {
         try {
             Flight flight = flightService.getFlight(ID);
             return ResponseEntity.ok(flight);
@@ -77,7 +78,7 @@ public class FlightController {
 
     @ApiOperation(value = "New Airport adding method")
     @PostMapping("add")
-    public ResponseEntity<Flight> addFlight(@RequestBody NewFlightDto newFlightDto) {
+    public ResponseEntity<Flight> addFlight(@ApiParam(value = "New Flight Object", required = true) @RequestBody NewFlightDto newFlightDto) {
         try {
             Flight newFlight = flightService.addFlight(newFlightDto);
             return ResponseEntity.ok(newFlight);
@@ -88,7 +89,7 @@ public class FlightController {
 
     @ApiOperation(value = "Airport deleting method")
     @DeleteMapping ("delete/{ID}")
-    public ResponseEntity<String> deleteFlight(@PathVariable Long ID) {
+    public ResponseEntity<String> deleteFlight(@ApiParam(value = "ID of Flight to be deleted", required = true) @PathVariable Long ID) {
         try {
             flightService.deleteFlight(ID);
             return ResponseEntity.ok("Flight Successfully Deleted!");
@@ -102,9 +103,9 @@ public class FlightController {
     @ApiOperation(value = "Airport list of single-trips method")
     @GetMapping("search/single")
     public ResponseEntity<List<Flight>> getAllSingleTrips(
-            @RequestParam(value = "from") Long originID,
-            @RequestParam(value = "to") Long destinationID,
-            @RequestParam(value = "departure") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate
+            @ApiParam(value = "Origin Airport ID", required = true) @RequestParam(value = "from") Long originID,
+            @ApiParam(value = "Destination Airport ID", required = true) @RequestParam(value = "to") Long destinationID,
+            @ApiParam(value = "Departure Date", required = true) @RequestParam(value = "departure") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate
     ) {
         try{
             List<Flight> flights = flightService.searchSingleTrips(new SingleTripDto(originID, destinationID, departureDate));
@@ -118,10 +119,10 @@ public class FlightController {
     @ApiOperation(value = "Airport list of round-trips method")
     @GetMapping("search/round")
     public ResponseEntity<List<Flight>> getAllRoundTrips(
-            @RequestParam(value = "from") Long originID,
-            @RequestParam(value = "to") Long destinationID,
-            @RequestParam(value = "departure") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
-            @RequestParam(value = "return") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate
+            @ApiParam(value = "Origin Airport ID", required = true) @RequestParam(value = "from") Long originID,
+            @ApiParam(value = "Destination Airport ID", required = true) @RequestParam(value = "to") Long destinationID,
+            @ApiParam(value = "Departure Date", required = true) @RequestParam(value = "departure") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
+            @ApiParam(value = "Return Date", required = true) @RequestParam(value = "return") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate
     ) {
         try{
             List<Flight> flights = flightService.searchRoundTrips(new RoundTripDto(originID, destinationID, departureDate, returnDate));
