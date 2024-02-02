@@ -64,10 +64,10 @@ public class AirportController {
 
     @ApiOperation(value = "Airport updating method")
     @PutMapping("update")
-    public ResponseEntity<String> editAirport(@ApiParam(value = "Updated Airport Object", required = true) @RequestBody AirportUpdateDto airportUpdateDto) {
+    public ResponseEntity<String> updateAirport(@ApiParam(value = "Updated Airport Object", required = true) @RequestBody AirportUpdateDto airportUpdateDto) {
         try {
             airportService.updateAirport(airportUpdateDto);
-            return ResponseEntity.ok("Airport Successfully Edited!");
+            return ResponseEntity.ok("Airport Successfully Updated!");
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {

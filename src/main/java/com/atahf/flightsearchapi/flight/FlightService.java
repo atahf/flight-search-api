@@ -3,6 +3,7 @@ package com.atahf.flightsearchapi.flight;
 import com.atahf.flightsearchapi.airport.Airport;
 import com.atahf.flightsearchapi.airport.AirportDao;
 
+import com.atahf.flightsearchapi.flight.FlightDto.FlightUpdateDto;
 import com.atahf.flightsearchapi.flight.FlightDto.NewFlightDto;
 import com.atahf.flightsearchapi.flight.FlightDto.RoundTripDto;
 import com.atahf.flightsearchapi.flight.FlightDto.SingleTripDto;
@@ -33,6 +34,24 @@ public class FlightService {
     }
 
     @Transactional
+    public void updateFlight(FlightUpdateDto flightUpdateDto) throws NotFoundException {
+        Flight flight = flightDao.findByID(flightUpdateDto.getID());
+        if(flight == null) throw new NotFoundException("Flight Not Found!");
+
+        Airport origin = airportDao.findByID(flightUpdateDto.getOriginAirport());
+        if(origin == null) throw new NotFoundException("OriginAirport Not Found!");
+
+        Airport destination = airportDao.findByID(flightUpdateDto.getDestinationAirport());
+        if(destination == null) throw new NotFoundException("Destination Airport Not Found!");
+
+        flight.setOrigin(origin);
+        flight.setDestination(destination);
+        flight.setDepartureDate(flightUpdateDto.getDepartureDate());
+        flight.setReturnDate(flightUpdateDto.getReturnDate());
+        flight.setPrice(flightUpdateDto.getPrice());
+    }
+
+    @Transactional
     public void deleteFlight(Long ID) throws Exception {
         Flight flight = flightDao.findByID(ID);
 
@@ -44,7 +63,7 @@ public class FlightService {
     public Flight getFlight(Long ID) throws Exception {
         Flight flight = flightDao.findByID(ID);
 
-        if(flight == null) throw new NotFoundException("Airport Not Found!");
+        if(flight == null) throw new NotFoundException("Flight Not Found!");
 
         return flight;
     }

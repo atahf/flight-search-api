@@ -1,6 +1,8 @@
 package com.atahf.flightsearchapi.flight;
 
+import com.atahf.flightsearchapi.airport.AirportDto.AirportUpdateDto;
 import com.atahf.flightsearchapi.airport.AirportService;
+import com.atahf.flightsearchapi.flight.FlightDto.FlightUpdateDto;
 import com.atahf.flightsearchapi.flight.FlightDto.NewFlightDto;
 import com.atahf.flightsearchapi.flight.FlightDto.RoundTripDto;
 import com.atahf.flightsearchapi.flight.FlightDto.SingleTripDto;
@@ -82,6 +84,19 @@ public class FlightController {
         try {
             Flight newFlight = flightService.addFlight(newFlightDto);
             return ResponseEntity.ok(newFlight);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @ApiOperation(value = "Airport updating method")
+    @DeleteMapping ("update")
+    public ResponseEntity<String> updateFlight(@ApiParam(value = "Updated Flight Object", required = true) @RequestBody FlightUpdateDto flightUpdateDto) {
+        try {
+            flightService.updateFlight(flightUpdateDto);
+            return ResponseEntity.ok("Flight Successfully Updated!");
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
