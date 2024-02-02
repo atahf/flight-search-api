@@ -15,7 +15,9 @@ import java.util.List;
 public interface FlightDao extends JpaRepository<Flight,Long> {
     Flight findByID(Long ID);
     List<Flight> findAllByOrderByDepartureDate();
-
+    List<Flight> findAllByOrigin(Airport origin);
+    List<Flight> findAllByDestination(Airport destination);
+    List<Flight> findAllByOriginAndDestination(Airport origin, Airport destination);
     @Query("SELECT f FROM Flight f WHERE f.origin.ID = :#{#info.originAirport} and FUNCTION('DATE', f.departureDate) = :#{#info.departureDate} and f.destination.ID = :#{#info.destinationAirport}")
     List<Flight> findAllSingleTrips(@Param("info") SingleTripDto singleTripDto);
     @Query("SELECT f FROM Flight f WHERE f.origin.ID = :#{#info.originAirport} and FUNCTION('DATE', f.departureDate) = :#{#info.departureDate} and f.destination.ID = :#{#info.destinationAirport} and FUNCTION('DATE', f.departureDate) = :#{#info.returnDate}")

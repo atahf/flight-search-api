@@ -54,6 +54,32 @@ public class FlightService {
         return flightDao.findAllByOrderByDepartureDate();
     }
 
+    public List<Flight> getAllFlightsFrom(Long originID) throws Exception {
+        Airport airport = airportDao.findByID(originID);
+
+        if(airport == null) throw new Exception("Airport Not Found!");
+
+        return flightDao.findAllByOrigin(airport);
+    }
+
+    public List<Flight> getAllFlightsTo(Long destinationID) throws Exception {
+        Airport airport = airportDao.findByID(destinationID);
+
+        if(airport == null) throw new Exception("Airport Not Found!");
+
+        return flightDao.findAllByDestination(airport);
+    }
+
+    public List<Flight> getAllFlightsFromNTo(Long originID, Long destinationID) throws Exception {
+        Airport airportOrigin = airportDao.findByID(originID);
+        if(airportOrigin == null) throw new Exception("Origin Airport Not Found!");
+
+        Airport airportDestination = airportDao.findByID(destinationID);
+        if(airportDestination == null) throw new Exception("Destination Airport Not Found!");
+
+        return flightDao.findAllByOriginAndDestination(airportOrigin, airportDestination);
+    }
+
     public List<Flight> searchSingleTrips(SingleTripDto singleTripDto) {
         return flightDao.findAllSingleTrips(singleTripDto);
     }

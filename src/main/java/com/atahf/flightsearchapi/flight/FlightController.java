@@ -34,10 +34,24 @@ public class FlightController {
     }
 
     @GetMapping("all")
-    public ResponseEntity<List<Flight>> getAll() {
+    public ResponseEntity<List<Flight>> getAllFrom(
+            @RequestParam(required = false, value = "from") Long originID,
+            @RequestParam(required = false, value = "to") Long destinationID
+    ) {
         try {
-            List<Flight> flights = flightService.getAllFlights();
-            return ResponseEntity.ok(flights);
+            if(originID == null && destinationID == null) {
+                return ResponseEntity.ok(flightService.getAllFlights());
+            }
+
+            if(destinationID == null) {
+                return ResponseEntity.ok(flightService.getAllFlightsFrom(originID));
+            }
+
+            if(originID == null) {
+                return ResponseEntity.ok(flightService.getAllFlightsTo(destinationID));
+            }
+
+            return ResponseEntity.ok(flightService.getAllFlightsFromNTo(originID, destinationID));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -75,10 +89,10 @@ public class FlightController {
 
     @GetMapping("search/single")
     public ResponseEntity<List<Flight>> getAllSingleTrips(
-            @RequestParam Long originID,
-            @RequestParam Long destinationID,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate)
-    {
+            @RequestParam(value = "from") Long originID,
+            @RequestParam(value = "to") Long destinationID,
+            @RequestParam(value = "departure") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate
+    ) {
         try{
             List<Flight> flights = flightService.searchSingleTrips(new SingleTripDto(originID, destinationID, departureDate));
             return ResponseEntity.ok(flights);
@@ -90,11 +104,11 @@ public class FlightController {
 
     @GetMapping("search/round")
     public ResponseEntity<List<Flight>> getAllRoundTrips(
-            @RequestParam Long originID,
-            @RequestParam Long destinationID,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate)
-    {
+            @RequestParam(value = "from") Long originID,
+            @RequestParam(value = "to") Long destinationID,
+            @RequestParam(value = "departure") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
+            @RequestParam(value = "return") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate
+    ) {
         try{
             List<Flight> flights = flightService.searchRoundTrips(new RoundTripDto(originID, destinationID, departureDate, returnDate));
             return ResponseEntity.ok(flights);
@@ -107,7 +121,7 @@ public class FlightController {
     @Scheduled(cron = "0 0 0 * * *")
     public void fetchFlights() {
         System.out.println("Fetching Flights at " + LocalDateTime.now().toString().replace('T', ' '));
-        int flightCount = ThreadLocalRandom.current().nextInt(25, 100);
+        int flightCount = ThreadLocalRandom.current().nextInt(100, 1000);
         for(int i = 0; i < flightCount; i++) {
             NewFlightDto newFlightDto = GenerateRandomFlight();
             flightService.addFlight(newFlightDto);
