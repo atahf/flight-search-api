@@ -1,16 +1,14 @@
 package com.atahf.flightsearchapi.flight.FlightDto;
 
 import lombok.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewFlightDto {
+public class SingleTripDto {
     private Long originAirport;
     private Long destinationAirport;
-    private LocalDateTime departureDate;
-    private LocalDateTime returnDate;
-    private double price;
+    private LocalDate departureDate;
 }

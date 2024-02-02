@@ -2,6 +2,9 @@ package com.atahf.flightsearchapi.flight;
 
 import com.atahf.flightsearchapi.airport.AirportService;
 import com.atahf.flightsearchapi.flight.FlightDto.NewFlightDto;
+import com.atahf.flightsearchapi.flight.FlightDto.RoundTripDto;
+import com.atahf.flightsearchapi.flight.FlightDto.SingleTripDto;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -65,6 +69,37 @@ public class FlightController {
             flightService.deleteFlight(ID);
             return ResponseEntity.ok("Flight Successfully Deleted!");
         } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("search/single")
+    public ResponseEntity<List<Flight>> getAllSingleTrips(
+            @RequestParam Long originID,
+            @RequestParam Long destinationID,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate)
+    {
+        try{
+            List<Flight> flights = flightService.searchSingleTrips(new SingleTripDto(originID, destinationID, departureDate));
+            return ResponseEntity.ok(flights);
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("search/round")
+    public ResponseEntity<List<Flight>> getAllRoundTrips(
+            @RequestParam Long originID,
+            @RequestParam Long destinationID,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate)
+    {
+        try{
+            List<Flight> flights = flightService.searchRoundTrips(new RoundTripDto(originID, destinationID, departureDate, returnDate));
+            return ResponseEntity.ok(flights);
+        }
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }

@@ -12,15 +12,15 @@ import java.time.LocalDateTime;
 public class NewFlightInfoDto {
     private Airport origin;
     private Airport destination;
-    private LocalDateTime departure;
-    private LocalDateTime arrival;
+    private LocalDateTime departureDate;
+    private LocalDateTime returnDate;
     private double price;
 
     public NewFlightInfoDto(NewFlightDto newFlightDto, Airport origin, Airport destination) {
         this.origin = origin;
         this.destination = destination;
-        this.departure = newFlightDto.getDeparture();
-        this.arrival = newFlightDto.getArrival();
+        this.departureDate = newFlightDto.getDepartureDate();
+        this.returnDate = newFlightDto.getReturnDate();
         this.price = newFlightDto.getPrice();
     }
 }

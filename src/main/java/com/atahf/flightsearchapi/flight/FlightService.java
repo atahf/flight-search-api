@@ -5,6 +5,8 @@ import com.atahf.flightsearchapi.airport.AirportDao;
 
 import com.atahf.flightsearchapi.flight.FlightDto.NewFlightDto;
 import com.atahf.flightsearchapi.flight.FlightDto.NewFlightInfoDto;
+import com.atahf.flightsearchapi.flight.FlightDto.RoundTripDto;
+import com.atahf.flightsearchapi.flight.FlightDto.SingleTripDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +51,14 @@ public class FlightService {
     }
 
     public List<Flight> getAllFlights() {
-        return flightDao.findAllByOrderByDeparture();
+        return flightDao.findAllByOrderByDepartureDate();
+    }
+
+    public List<Flight> searchSingleTrips(SingleTripDto singleTripDto) {
+        return flightDao.findAllSingleTrips(singleTripDto);
+    }
+
+    public List<Flight> searchRoundTrips(RoundTripDto roundTripDto) {
+        return flightDao.findAllRoundTrips(roundTripDto);
     }
 }

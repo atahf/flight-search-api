@@ -23,15 +23,15 @@ public class Flight {
     @ManyToOne
     @JoinColumn(name = "destination_id")
     private Airport destination;
-    private LocalDateTime departure;
-    private LocalDateTime arrival;
+    private LocalDateTime departureDate;
+    private LocalDateTime returnDate;
     private double price;
 
     public Flight(NewFlightInfoDto newFlightInfoDto) {
         this.origin = newFlightInfoDto.getOrigin();
         this.destination = newFlightInfoDto.getDestination();
-        this.departure = newFlightInfoDto.getDeparture();
-        this.arrival = newFlightInfoDto.getArrival();
+        this.departureDate = newFlightInfoDto.getDepartureDate();
+        this.returnDate = newFlightInfoDto.getReturnDate();
         this.price = newFlightInfoDto.getPrice();
     }
 }
