@@ -8,6 +8,7 @@ import com.atahf.flightsearchapi.flight.FlightDto.NewFlightDto;
 import com.atahf.flightsearchapi.flight.FlightDto.RoundTripDto;
 import com.atahf.flightsearchapi.flight.FlightDto.SingleTripDto;
 import com.atahf.flightsearchapi.utils.NotFoundException;
+import com.atahf.flightsearchapi.utils.SameOriginAndDestinationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -89,6 +90,8 @@ public class FlightService {
     }
 
     public List<Flight> getAllFlightsFromNTo(Long originID, Long destinationID) throws Exception {
+        if(originID.equals(destinationID)) throw new SameOriginAndDestinationException("Destination Airport cannot be same with Origin Airport");
+
         Airport airportOrigin = airportDao.findByID(originID);
         if(airportOrigin == null) throw new NotFoundException("Origin Airport Not Found!");
 
@@ -98,11 +101,15 @@ public class FlightService {
         return flightDao.findAllByOriginAndDestination(airportOrigin, airportDestination);
     }
 
-    public List<Flight> searchSingleTrips(SingleTripDto singleTripDto) {
+    public List<Flight> searchSingleTrips(SingleTripDto singleTripDto) throws SameOriginAndDestinationException {
+        if(singleTripDto.getOriginAirport().equals(singleTripDto.getDestinationAirport())) throw new SameOriginAndDestinationException("Destination Airport cannot be same with Origin Airport");
+
         return flightDao.findAllSingleTrips(singleTripDto);
     }
 
-    public List<Flight> searchRoundTrips(RoundTripDto roundTripDto) {
+    public List<Flight> searchRoundTrips(RoundTripDto roundTripDto) throws SameOriginAndDestinationException {
+        if(roundTripDto.getOriginAirport().equals(roundTripDto.getDestinationAirport())) throw new SameOriginAndDestinationException("Destination Airport cannot be same with Origin Airport");
+
         return flightDao.findAllRoundTrips(roundTripDto);
     }
 }

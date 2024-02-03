@@ -6,7 +6,9 @@ import com.atahf.flightsearchapi.flight.FlightDto.FlightUpdateDto;
 import com.atahf.flightsearchapi.flight.FlightDto.NewFlightDto;
 import com.atahf.flightsearchapi.flight.FlightDto.RoundTripDto;
 import com.atahf.flightsearchapi.flight.FlightDto.SingleTripDto;
+import com.atahf.flightsearchapi.utils.GeneralResponse;
 import com.atahf.flightsearchapi.utils.NotFoundException;
+import com.atahf.flightsearchapi.utils.SameOriginAndDestinationException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,6 +23,7 @@ import javax.annotation.PostConstruct;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -40,26 +43,28 @@ public class FlightController {
 
     @ApiOperation(value = "Airport list method")
     @GetMapping("all")
-    public ResponseEntity<?> getAllFlights(
+    public ResponseEntity<GeneralResponse<List<Flight>>> getAllFlights(
             @ApiParam(value = "Origin Airport ID") @RequestParam(required = false, value = "from") Long originID,
             @ApiParam(value = "Destination Airport ID") @RequestParam(required = false, value = "to") Long destinationID
     ) {
+        GeneralResponse<List<Flight>> response = new GeneralResponse<>("success", 0, null);
         try {
+            List<Flight> flights;
             if(originID == null && destinationID == null) {
-                return ResponseEntity.ok(flightService.getAllFlights());
+                flights = flightService.getAllFlights();
+            } else if(originID != null && destinationID == null) {
+                flights = flightService.getAllFlightsFrom(originID);
+            } else if(originID == null) {
+                flights = flightService.getAllFlightsTo(destinationID);
+            } else {
+                flights = flightService.getAllFlightsFromNTo(originID, destinationID);
             }
-
-            if(originID != null && destinationID == null) {
-                return ResponseEntity.ok(flightService.getAllFlightsFrom(originID));
-            }
-
-            if(originID == null) {
-                return ResponseEntity.ok(flightService.getAllFlightsTo(destinationID));
-            }
-
-            return ResponseEntity.ok(flightService.getAllFlightsFromNTo(originID, destinationID));
-        } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            response.setResult(flights);
+            response.setResult_count(flights.size());
+            return ResponseEntity.ok(response);
+        } catch (NotFoundException | SameOriginAndDestinationException e) {
+            response.setStatus(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -67,12 +72,15 @@ public class FlightController {
 
     @ApiOperation(value = "Airport by ID method")
     @GetMapping("{ID}")
-    public ResponseEntity<?> getFlight(@ApiParam(value = "Flight ID", required = true) @PathVariable Long ID) {
+    public ResponseEntity<GeneralResponse<Flight>> getFlight(@ApiParam(value = "Flight ID", required = true) @PathVariable Long ID) {
+        GeneralResponse<Flight> response = new GeneralResponse<>("success", 0, null);
         try {
-            Flight flight = flightService.getFlight(ID);
-            return ResponseEntity.ok(flight);
+            response.setResult(flightService.getFlight(ID));
+            response.setResult_count(1);
+            return ResponseEntity.ok(response);
         } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            response.setStatus(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -80,10 +88,12 @@ public class FlightController {
 
     @ApiOperation(value = "New Airport adding method")
     @PostMapping("add")
-    public ResponseEntity<Flight> addFlight(@ApiParam(value = "New Flight Object", required = true) @RequestBody NewFlightDto newFlightDto) {
+    public ResponseEntity<GeneralResponse<Flight>> addFlight(@ApiParam(value = "New Flight Object", required = true) @RequestBody NewFlightDto newFlightDto) {
+        GeneralResponse<Flight> response = new GeneralResponse<>("success", 0, null);
         try {
-            Flight newFlight = flightService.addFlight(newFlightDto);
-            return ResponseEntity.ok(newFlight);
+            response.setResult(flightService.addFlight(newFlightDto));
+            response.setResult_count(1);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -91,12 +101,16 @@ public class FlightController {
 
     @ApiOperation(value = "Airport updating method")
     @PutMapping ("update")
-    public ResponseEntity<String> updateFlight(@ApiParam(value = "Updated Flight Object", required = true) @RequestBody FlightUpdateDto flightUpdateDto) {
+    public ResponseEntity<GeneralResponse<String>> updateFlight(@ApiParam(value = "Updated Flight Object", required = true) @RequestBody FlightUpdateDto flightUpdateDto) {
+        GeneralResponse<String> response = new GeneralResponse<>("success", 0, null);
         try {
             flightService.updateFlight(flightUpdateDto);
-            return ResponseEntity.ok("Flight Successfully Updated!");
+            response.setResult("Flight Successfully Updated!");
+            response.setResult_count(1);
+            return ResponseEntity.ok(response);
         } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            response.setStatus(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -104,12 +118,16 @@ public class FlightController {
 
     @ApiOperation(value = "Airport deleting method")
     @DeleteMapping ("delete/{ID}")
-    public ResponseEntity<String> deleteFlight(@ApiParam(value = "ID of Flight to be deleted", required = true) @PathVariable Long ID) {
+    public ResponseEntity<GeneralResponse<String>> deleteFlight(@ApiParam(value = "ID of Flight to be deleted", required = true) @PathVariable Long ID) {
+        GeneralResponse<String> response = new GeneralResponse<>("success", 0, null);
         try {
             flightService.deleteFlight(ID);
-            return ResponseEntity.ok("Flight Successfully Deleted!");
+            response.setResult("Flight Successfully Deleted!");
+            response.setResult_count(1);
+            return ResponseEntity.ok(response);
         } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            response.setStatus(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -117,33 +135,43 @@ public class FlightController {
 
     @ApiOperation(value = "Airport list of single-trips method")
     @GetMapping("search/single")
-    public ResponseEntity<List<Flight>> getAllSingleTrips(
+    public ResponseEntity<GeneralResponse<List<Flight>>> getAllSingleTrips(
             @ApiParam(value = "Origin Airport ID", required = true) @RequestParam(value = "from") Long originID,
             @ApiParam(value = "Destination Airport ID", required = true) @RequestParam(value = "to") Long destinationID,
             @ApiParam(value = "Departure Date", required = true) @RequestParam(value = "departure") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate
     ) {
+        GeneralResponse<List<Flight>> response = new GeneralResponse<>("success", 0, null);
         try{
             List<Flight> flights = flightService.searchSingleTrips(new SingleTripDto(originID, destinationID, departureDate));
-            return ResponseEntity.ok(flights);
-        }
-        catch (Exception e) {
+            response.setResult(flights);
+            response.setResult_count(flights.size());
+            return ResponseEntity.ok(response);
+        } catch (SameOriginAndDestinationException e) {
+            response.setStatus(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     @ApiOperation(value = "Airport list of round-trips method")
     @GetMapping("search/round")
-    public ResponseEntity<List<Flight>> getAllRoundTrips(
+    public ResponseEntity<GeneralResponse<List<Flight>>> getAllRoundTrips(
             @ApiParam(value = "Origin Airport ID", required = true) @RequestParam(value = "from") Long originID,
             @ApiParam(value = "Destination Airport ID", required = true) @RequestParam(value = "to") Long destinationID,
             @ApiParam(value = "Departure Date", required = true) @RequestParam(value = "departure") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
             @ApiParam(value = "Return Date", required = true) @RequestParam(value = "return") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate
     ) {
+        GeneralResponse<List<Flight>> response = new GeneralResponse<>("success", 0, null);
         try{
             List<Flight> flights = flightService.searchRoundTrips(new RoundTripDto(originID, destinationID, departureDate, returnDate));
-            return ResponseEntity.ok(flights);
-        }
-        catch (Exception e) {
+            response.setResult(flights);
+            response.setResult_count(flights.size());
+            return ResponseEntity.ok(response);
+        } catch (SameOriginAndDestinationException e) {
+            response.setStatus(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
