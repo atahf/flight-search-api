@@ -20,7 +20,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping("api/v1/airport")
-@Api(value = "Flight Search API - Airport Endpoints documentation")
+@Api(value = "Airport Endpoints documentation")
 public class AirportController {
 
     private final AirportService airportService;

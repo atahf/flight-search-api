@@ -5,6 +5,7 @@ import com.atahf.flightsearchapi.user.UserDto.*;
 import com.atahf.flightsearchapi.utils.GeneralResponse;
 import com.atahf.flightsearchapi.utils.NotFoundException;
 import com.atahf.flightsearchapi.utils.UserExistsException;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.security.core.Authentication;
 @CrossOrigin
 @RestController
 @RequestMapping("/")
+@Api(value = "User Endpoints documentation")
 public class UserController {
 
     private final UserService userService;
@@ -30,7 +32,7 @@ public class UserController {
     public ResponseEntity<GeneralResponse<String>> signUp(
             @ApiParam(value = "New User Object", required = true) @RequestBody UserInfoDto userInfoDto
     ) {
-        GeneralResponse<String> response = new GeneralResponse<>("success", 0, null);
+        GeneralResponse<String> response = new GeneralResponse<>("success", 0, "");
         try {
             userService.addUser(userInfoDto);
             response.setResult("User successfully Signed Up!");
@@ -49,7 +51,7 @@ public class UserController {
     public ResponseEntity<GeneralResponse<String>> deleteUser(
             Authentication authentication
     ) {
-        GeneralResponse<String> response = new GeneralResponse<>("success", 0, null);
+        GeneralResponse<String> response = new GeneralResponse<>("success", 0, "");
         try {
             userService.deleteUser(authentication.getName());
             response.setResult("User successfully Deleted!");

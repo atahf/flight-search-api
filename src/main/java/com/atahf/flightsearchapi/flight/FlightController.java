@@ -9,6 +9,7 @@ import com.atahf.flightsearchapi.flight.FlightDto.SingleTripDto;
 import com.atahf.flightsearchapi.utils.GeneralResponse;
 import com.atahf.flightsearchapi.utils.NotFoundException;
 import com.atahf.flightsearchapi.utils.SameOriginAndDestinationException;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,6 +32,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @CrossOrigin
 @RestController
 @RequestMapping("api/v1/flight")
+@Api(value = "Flight Endpoints documentation")
 public class FlightController {
     private final FlightService flightService;
     private final AirportService airportService;
@@ -47,7 +49,7 @@ public class FlightController {
             @ApiParam(value = "Origin Airport ID") @RequestParam(required = false, value = "from") Long originID,
             @ApiParam(value = "Destination Airport ID") @RequestParam(required = false, value = "to") Long destinationID
     ) {
-        GeneralResponse<List<Flight>> response = new GeneralResponse<>("success", 0, null);
+        GeneralResponse<List<Flight>> response = new GeneralResponse<>("success", 0, new ArrayList<>());
         try {
             List<Flight> flights;
             if(originID == null && destinationID == null) {
@@ -102,7 +104,7 @@ public class FlightController {
     @ApiOperation(value = "Airport updating method")
     @PutMapping ("update")
     public ResponseEntity<GeneralResponse<String>> updateFlight(@ApiParam(value = "Updated Flight Object", required = true) @RequestBody FlightUpdateDto flightUpdateDto) {
-        GeneralResponse<String> response = new GeneralResponse<>("success", 0, null);
+        GeneralResponse<String> response = new GeneralResponse<>("success", 0, "");
         try {
             flightService.updateFlight(flightUpdateDto);
             response.setResult("Flight Successfully Updated!");
@@ -119,7 +121,7 @@ public class FlightController {
     @ApiOperation(value = "Airport deleting method")
     @DeleteMapping ("delete/{ID}")
     public ResponseEntity<GeneralResponse<String>> deleteFlight(@ApiParam(value = "ID of Flight to be deleted", required = true) @PathVariable Long ID) {
-        GeneralResponse<String> response = new GeneralResponse<>("success", 0, null);
+        GeneralResponse<String> response = new GeneralResponse<>("success", 0, "");
         try {
             flightService.deleteFlight(ID);
             response.setResult("Flight Successfully Deleted!");
@@ -140,7 +142,7 @@ public class FlightController {
             @ApiParam(value = "Destination Airport ID", required = true) @RequestParam(value = "to") Long destinationID,
             @ApiParam(value = "Departure Date", required = true) @RequestParam(value = "departure") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate
     ) {
-        GeneralResponse<List<Flight>> response = new GeneralResponse<>("success", 0, null);
+        GeneralResponse<List<Flight>> response = new GeneralResponse<>("success", 0, new ArrayList<>());
         try{
             List<Flight> flights = flightService.searchSingleTrips(new SingleTripDto(originID, destinationID, departureDate));
             response.setResult(flights);
@@ -162,7 +164,7 @@ public class FlightController {
             @ApiParam(value = "Departure Date", required = true) @RequestParam(value = "departure") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
             @ApiParam(value = "Return Date", required = true) @RequestParam(value = "return") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate
     ) {
-        GeneralResponse<List<Flight>> response = new GeneralResponse<>("success", 0, null);
+        GeneralResponse<List<Flight>> response = new GeneralResponse<>("success", 0, new ArrayList<>());
         try{
             List<Flight> flights = flightService.searchRoundTrips(new RoundTripDto(originID, destinationID, departureDate, returnDate));
             response.setResult(flights);

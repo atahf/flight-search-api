@@ -26,9 +26,13 @@ public class User implements UserDetails {
     private String password;
     @ApiModelProperty(value = "role of user object")
     private String role;
+    @ApiModelProperty(value = "isAccountNonExpired field of user object")
     private Boolean isAccountNonExpired;
+    @ApiModelProperty(value = "isAccountNonLocked field of user object")
     private Boolean isAccountNonLocked;
+    @ApiModelProperty(value = "isCredentialsNonExpired field of user object")
     private Boolean isCredentialsNonExpired;
+    @ApiModelProperty(value = "isEnabled field of user object")
     private Boolean isEnabled;
 
     @Override
