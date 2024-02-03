@@ -224,9 +224,13 @@ public class FlightController {
         System.out.println("Fetching Flights at " + LocalDateTime.now().toString().replace('T', ' '));
 
         try {
+            int count = airportService.getAllAirports().size();
+            if(count < 1) throw new RuntimeException("No Airports Do Exist!");
+
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<String> response = restTemplate.exchange(
-                    "https://run.mocky.io/v3/f100bbac-42ba-40cf-9573-6b5c6ff882c2",
+                    "http://localhost:8081/mock-api/get-data?count="+ count,
+                    //"https://run.mocky.io/v3/f100bbac-42ba-40cf-9573-6b5c6ff882c2",
                     HttpMethod.GET,
                     null,
                     String.class);
@@ -239,7 +243,7 @@ public class FlightController {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         }
     }
 

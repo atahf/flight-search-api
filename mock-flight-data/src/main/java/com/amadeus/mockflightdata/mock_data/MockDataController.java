@@ -1,37 +1,30 @@
-package com.atahf.flightsearchapi.mock_3rd_party;
+package com.amadeus.mockflightdata.mock_data;
 
-import com.atahf.flightsearchapi.airport.AirportService;
-import com.atahf.flightsearchapi.flight.FlightDto.NewFlightDto;
-import io.swagger.annotations.Api;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 @CrossOrigin
 @RestController
 @RequestMapping(path = "/mock-api")
-@Api(value = "Mock 3rd party API Endpoints documentation")
 public class MockDataController {
     @GetMapping("get-data")
-    public ResponseEntity<List<NewFlightDto>> getRandomFlights() {
+    public ResponseEntity<List<MockData>> getRandomFlights(@RequestParam Long count) {
         int number = ThreadLocalRandom.current().nextInt(1, 100);
 
-        List<NewFlightDto> flights = new ArrayList<>();
+        List<MockData> flights = new ArrayList<>();
         for (int i = 0; i < number; i++) {
-            flights.add(GenerateRandomFlight(29L));
+            flights.add(GenerateRandomFlight(count));
         }
         return ResponseEntity.ok(flights);
     }
 
-    public static NewFlightDto GenerateRandomFlight(Long airport) {
+    public static MockData GenerateRandomFlight(Long airport) {
         long departureSeconds = ThreadLocalRandom.current().nextLong(0, 86400);
         LocalDateTime departure = LocalDateTime.now().plusSeconds(departureSeconds);
 
@@ -49,6 +42,6 @@ public class MockDataController {
         String formattedPrice = decimalFormat.format(uglyPrice);
         double price = Double.parseDouble(formattedPrice);
 
-        return new NewFlightDto(originID, destinationID, departure, arrival, price);
+        return new MockData(originID, destinationID, departure, arrival, price);
     }
 }
