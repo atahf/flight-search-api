@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ApiModelProperty(value = "Unique id field of flight object")
+    @ApiModelProperty(value = "Unique id of flight object")
     private Long ID;
     @ManyToOne
     @JoinColumn(name = "origin_id")

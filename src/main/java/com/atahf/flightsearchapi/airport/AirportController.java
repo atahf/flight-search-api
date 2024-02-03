@@ -43,6 +43,7 @@ public class AirportController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
     @ApiOperation(value = "Airport by ID Method")
     @GetMapping("{ID}")
     public ResponseEntity<GeneralResponse<Airport>> getAirport(@ApiParam(value = "Airport ID", required = true) @PathVariable Long ID) {

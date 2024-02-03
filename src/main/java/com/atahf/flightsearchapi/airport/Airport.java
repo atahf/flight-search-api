@@ -17,7 +17,7 @@ import lombok.*;
 public class Airport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ApiModelProperty(value = "Unique id field of airport object")
+    @ApiModelProperty(value = "Unique id of airport object")
     private Long ID;
     @ApiModelProperty(value = "city of airport object")
     private String city;
