@@ -1,6 +1,5 @@
 package com.atahf.flightsearchapi.flight;
 
-import com.atahf.flightsearchapi.airport.AirportDto.AirportUpdateDto;
 import com.atahf.flightsearchapi.airport.AirportService;
 import com.atahf.flightsearchapi.flight.FlightDto.FlightUpdateDto;
 import com.atahf.flightsearchapi.flight.FlightDto.NewFlightDto;
@@ -9,9 +8,7 @@ import com.atahf.flightsearchapi.flight.FlightDto.SingleTripDto;
 import com.atahf.flightsearchapi.utils.GeneralResponse;
 import com.atahf.flightsearchapi.utils.NotFoundException;
 import com.atahf.flightsearchapi.utils.SameOriginAndDestinationException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +41,13 @@ public class FlightController {
     }
 
     @ApiOperation(value = "Airport list method")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = GeneralResponse.class),
+            @ApiResponse(code = 400, message = "bad airport IDs, both with same ID", response = GeneralResponse.class),
+            @ApiResponse(code = 403, message = "authorization failed"),
+            @ApiResponse(code = 404, message = "flight not found", response = GeneralResponse.class),
+            @ApiResponse(code = 500, message = "Server side failure")
+    })
     @GetMapping("all")
     public ResponseEntity<GeneralResponse<List<Flight>>> getAllFlights(
             @ApiParam(value = "Origin Airport ID") @RequestParam(required = false, value = "from") Long originID,
@@ -64,15 +68,24 @@ public class FlightController {
             response.setResult(flights);
             response.setResult_count(flights.size());
             return ResponseEntity.ok(response);
-        } catch (NotFoundException | SameOriginAndDestinationException e) {
+        } catch (NotFoundException e) {
             response.setStatus(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (SameOriginAndDestinationException e) {
+            response.setStatus(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     @ApiOperation(value = "Airport by ID method")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = GeneralResponse.class),
+            @ApiResponse(code = 403, message = "authorization failed"),
+            @ApiResponse(code = 404, message = "flight not found", response = GeneralResponse.class),
+            @ApiResponse(code = 500, message = "Server side failure")
+    })
     @GetMapping("{ID}")
     public ResponseEntity<GeneralResponse<Flight>> getFlight(@ApiParam(value = "Flight ID", required = true) @PathVariable Long ID) {
         GeneralResponse<Flight> response = new GeneralResponse<>("success", 0, null);
@@ -89,6 +102,11 @@ public class FlightController {
     }
 
     @ApiOperation(value = "New Airport adding method")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = GeneralResponse.class),
+            @ApiResponse(code = 403, message = "authorization failed"),
+            @ApiResponse(code = 500, message = "Server side failure")
+    })
     @PostMapping("add")
     public ResponseEntity<GeneralResponse<Flight>> addFlight(@ApiParam(value = "New Flight Object", required = true) @RequestBody NewFlightDto newFlightDto) {
         GeneralResponse<Flight> response = new GeneralResponse<>("success", 0, null);
@@ -102,6 +120,12 @@ public class FlightController {
     }
 
     @ApiOperation(value = "Airport updating method")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = GeneralResponse.class),
+            @ApiResponse(code = 403, message = "authorization failed"),
+            @ApiResponse(code = 404, message = "flight not found", response = GeneralResponse.class),
+            @ApiResponse(code = 500, message = "Server side failure")
+    })
     @PutMapping ("update")
     public ResponseEntity<GeneralResponse<String>> updateFlight(@ApiParam(value = "Updated Flight Object", required = true) @RequestBody FlightUpdateDto flightUpdateDto) {
         GeneralResponse<String> response = new GeneralResponse<>("success", 0, "");
@@ -119,6 +143,12 @@ public class FlightController {
     }
 
     @ApiOperation(value = "Airport deleting method")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = GeneralResponse.class),
+            @ApiResponse(code = 403, message = "authorization failed"),
+            @ApiResponse(code = 404, message = "flight not found", response = GeneralResponse.class),
+            @ApiResponse(code = 500, message = "Server side failure")
+    })
     @DeleteMapping ("delete/{ID}")
     public ResponseEntity<GeneralResponse<String>> deleteFlight(@ApiParam(value = "ID of Flight to be deleted", required = true) @PathVariable Long ID) {
         GeneralResponse<String> response = new GeneralResponse<>("success", 0, "");
@@ -136,6 +166,12 @@ public class FlightController {
     }
 
     @ApiOperation(value = "Airport list of single-trips method")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = GeneralResponse.class),
+            @ApiResponse(code = 400, message = "bad airport IDs, both with same ID", response = GeneralResponse.class),
+            @ApiResponse(code = 403, message = "authorization failed"),
+            @ApiResponse(code = 500, message = "Server side failure")
+    })
     @GetMapping("search/single")
     public ResponseEntity<GeneralResponse<List<Flight>>> getAllSingleTrips(
             @ApiParam(value = "Origin Airport ID", required = true) @RequestParam(value = "from") Long originID,
@@ -150,13 +186,19 @@ public class FlightController {
             return ResponseEntity.ok(response);
         } catch (SameOriginAndDestinationException e) {
             response.setStatus(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     @ApiOperation(value = "Airport list of round-trips method")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = GeneralResponse.class),
+            @ApiResponse(code = 400, message = "bad airport IDs, both with same ID", response = GeneralResponse.class),
+            @ApiResponse(code = 403, message = "authorization failed"),
+            @ApiResponse(code = 500, message = "Server side failure")
+    })
     @GetMapping("search/round")
     public ResponseEntity<GeneralResponse<List<Flight>>> getAllRoundTrips(
             @ApiParam(value = "Origin Airport ID", required = true) @RequestParam(value = "from") Long originID,

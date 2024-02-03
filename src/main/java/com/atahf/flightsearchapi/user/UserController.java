@@ -5,9 +5,7 @@ import com.atahf.flightsearchapi.user.UserDto.*;
 import com.atahf.flightsearchapi.utils.GeneralResponse;
 import com.atahf.flightsearchapi.utils.NotFoundException;
 import com.atahf.flightsearchapi.utils.UserExistsException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +26,11 @@ public class UserController {
     }
 
     @ApiOperation(value = "New User adding Method")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = GeneralResponse.class),
+            @ApiResponse(code = 400, message = "user already exists", response = GeneralResponse.class),
+            @ApiResponse(code = 500, message = "Server side failure")
+    })
     @PostMapping("signup")
     public ResponseEntity<GeneralResponse<String>> signUp(
             @ApiParam(value = "New User Object", required = true) @RequestBody UserInfoDto userInfoDto
@@ -47,9 +50,14 @@ public class UserController {
     }
 
     @ApiOperation(value = "New User adding Method")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = GeneralResponse.class),
+            @ApiResponse(code = 404, message = "user not found", response = GeneralResponse.class),
+            @ApiResponse(code = 500, message = "Server side failure")
+    })
     @DeleteMapping ("delete-account")
     public ResponseEntity<GeneralResponse<String>> deleteUser(
-            Authentication authentication
+            @ApiParam(hidden = true) Authentication authentication
     ) {
         GeneralResponse<String> response = new GeneralResponse<>("success", 0, "");
         try {
