@@ -1,21 +1,20 @@
 package com.atahf.flightsearchapi.flight;
 
 import com.atahf.flightsearchapi.airport.AirportService;
-import com.atahf.flightsearchapi.flight.FlightDto.FlightUpdateDto;
-import com.atahf.flightsearchapi.flight.FlightDto.NewFlightDto;
-import com.atahf.flightsearchapi.flight.FlightDto.RoundTripDto;
-import com.atahf.flightsearchapi.flight.FlightDto.SingleTripDto;
+import com.atahf.flightsearchapi.flight.FlightDto.*;
 import com.atahf.flightsearchapi.utils.GeneralResponse;
 import com.atahf.flightsearchapi.utils.NotFoundException;
 import com.atahf.flightsearchapi.utils.SameOriginAndDestinationException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.text.DecimalFormat;
@@ -223,32 +222,25 @@ public class FlightController {
     @Scheduled(cron = "0 0 0 * * *")
     public void fetchFlights() {
         System.out.println("Fetching Flights at " + LocalDateTime.now().toString().replace('T', ' '));
-        int flightCount = ThreadLocalRandom.current().nextInt(100, 1000);
-        for(int i = 0; i < flightCount; i++) {
-            NewFlightDto newFlightDto = GenerateRandomFlight();
-            flightService.addFlight(newFlightDto);
+
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> response = restTemplate.exchange(
+                    "https://run.mocky.io/v3/f100bbac-42ba-40cf-9573-6b5c6ff882c2",
+                    HttpMethod.GET,
+                    null,
+                    String.class);
+            if (response.getBody() != null) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                ExternalReturnedFlight[] flights = objectMapper.readValue(response.getBody(), ExternalReturnedFlight[].class);
+
+                for(ExternalReturnedFlight flight: flights) {
+                    flightService.addFlight(flight.getNewFlightDto());
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-    }
-
-    public NewFlightDto GenerateRandomFlight() {
-        long departureSeconds = ThreadLocalRandom.current().nextLong(0, 86400);
-        LocalDateTime departure = LocalDateTime.now().plusSeconds(departureSeconds);
-
-        long arrivalSeconds = ThreadLocalRandom.current().nextLong(1, 86400);
-        LocalDateTime arrival = departure.plusSeconds(arrivalSeconds);
-
-        List<Long> airportIDs = airportService.getAllAirportIDs();
-        Collections.shuffle(airportIDs);
-
-        Long originID = airportIDs.get(0);
-        Long destinationID = airportIDs.get(1);
-
-        double uglyPrice = ThreadLocalRandom.current().nextDouble(1000, 20000);
-        DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        String formattedPrice = decimalFormat.format(uglyPrice);
-        double price = Double.parseDouble(formattedPrice);
-
-        return new NewFlightDto(originID, destinationID, departure, arrival, price);
     }
 
     @PostConstruct

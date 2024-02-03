@@ -67,11 +67,24 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig, userService),JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(SWAGGER_ENDPOINTS).permitAll()
-                .antMatchers("/").permitAll()
+                .antMatchers("/", "/mock-api/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/login", "/signup").permitAll()
                 .antMatchers("/api/v1/**").hasAnyRole(USER.name())
                 .anyRequest()
                 .authenticated();
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.addAllowedOrigin("http://localhost:8080");
+        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addAllowedMethod("*");
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+
+        return new CorsFilter(source);
     }
 
     @Override
