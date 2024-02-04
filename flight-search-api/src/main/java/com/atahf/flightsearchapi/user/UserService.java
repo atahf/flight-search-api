@@ -50,6 +50,18 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
+    public void addAdmin(UserInfoDto userInfoDto) throws Exception {
+        User user = userDao.findUserByUsername(userInfoDto.getUsername());
+        if(user != null) throw new UserExistsException("Username Already Exists!");
+
+        User newUser = new User(userInfoDto);
+        newUser.setPassword(passwordEncoder.encode(userInfoDto.getPassword()));
+        newUser.setRole("ADMIN");
+
+        userDao.save(newUser);
+    }
+
+    @Transactional
     public void deleteUser(String username) throws Exception {
         User user = userDao.findUserByUsername(username);
         if(user == null) throw new NotFoundException("Username Not Found!");

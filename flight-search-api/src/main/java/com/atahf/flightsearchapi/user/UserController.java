@@ -31,14 +31,38 @@ public class UserController {
             @ApiResponse(code = 400, message = "user already exists", response = GeneralResponse.class),
             @ApiResponse(code = 500, message = "Server side failure")
     })
-    @PostMapping("signup")
-    public ResponseEntity<GeneralResponse<String>> signUp(
+    @PostMapping("register")
+    public ResponseEntity<GeneralResponse<String>> registerUser(
             @ApiParam(value = "New User Object", required = true) @RequestBody UserInfoDto userInfoDto
     ) {
         GeneralResponse<String> response = new GeneralResponse<>("success", 0, "");
         try {
             userService.addUser(userInfoDto);
-            response.setResult("User successfully Signed Up!");
+            response.setResult("User successfully Registered!");
+            response.setResult_count(1);
+            return ResponseEntity.ok(response);
+        } catch (UserExistsException e) {
+            response.setStatus(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @ApiOperation(value = "New Admin adding Method")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = GeneralResponse.class),
+            @ApiResponse(code = 400, message = "user already exists", response = GeneralResponse.class),
+            @ApiResponse(code = 500, message = "Server side failure")
+    })
+    @PostMapping("register-admin")
+    public ResponseEntity<GeneralResponse<String>> registerAdmin(
+            @ApiParam(value = "New Admin Object", required = true) @RequestBody UserInfoDto userInfoDto
+    ) {
+        GeneralResponse<String> response = new GeneralResponse<>("success", 0, "");
+        try {
+            userService.addAdmin(userInfoDto);
+            response.setResult("Admin successfully Registered!");
             response.setResult_count(1);
             return ResponseEntity.ok(response);
         } catch (UserExistsException e) {

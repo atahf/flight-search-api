@@ -1,7 +1,6 @@
 package com.atahf.flightsearchapi.security;
 
 import com.google.common.collect.Sets;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -9,7 +8,7 @@ import java.util.stream.Collectors;
 import static com.atahf.flightsearchapi.security.UserPermission.*;
 
 public enum UserRole {
-    USER(Sets.newHashSet(
+    ADMIN(Sets.newHashSet(
             AIRPORT_CREATE,
             AIRPORT_READ,
             AIRPORT_UPDATE,
@@ -18,6 +17,10 @@ public enum UserRole {
             FLIGHT_READ,
             FLIGHT_UPDATE,
             FLIGHT_Delete
+    )),
+    USER(Sets.newHashSet(
+            AIRPORT_READ,
+            FLIGHT_READ
     ));
 
     private final Set<UserPermission> permissions;

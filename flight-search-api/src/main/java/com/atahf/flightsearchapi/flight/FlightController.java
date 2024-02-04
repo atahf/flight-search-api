@@ -2,21 +2,26 @@ package com.atahf.flightsearchapi.flight;
 
 import com.atahf.flightsearchapi.airport.AirportService;
 import com.atahf.flightsearchapi.flight.FlightDto.*;
+import com.atahf.flightsearchapi.security.UserRole;
 import com.atahf.flightsearchapi.utils.GeneralResponse;
 import com.atahf.flightsearchapi.utils.NotFoundException;
 import com.atahf.flightsearchapi.utils.SameOriginAndDestinationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
+import org.springframework.context.annotation.Role;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.security.RolesAllowed;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
@@ -24,6 +29,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static com.atahf.flightsearchapi.security.UserRole.ADMIN;
+import static com.atahf.flightsearchapi.security.UserRole.USER;
 
 @CrossOrigin
 @RestController
@@ -106,6 +114,7 @@ public class FlightController {
             @ApiResponse(code = 403, message = "authorization failed"),
             @ApiResponse(code = 500, message = "Server side failure")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("add")
     public ResponseEntity<GeneralResponse<Flight>> addFlight(@ApiParam(value = "New Flight Object", required = true) @RequestBody NewFlightDto newFlightDto) {
         GeneralResponse<Flight> response = new GeneralResponse<>("success", 0, null);
@@ -125,6 +134,7 @@ public class FlightController {
             @ApiResponse(code = 404, message = "flight not found", response = GeneralResponse.class),
             @ApiResponse(code = 500, message = "Server side failure")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping ("update")
     public ResponseEntity<GeneralResponse<String>> updateFlight(@ApiParam(value = "Updated Flight Object", required = true) @RequestBody FlightUpdateDto flightUpdateDto) {
         GeneralResponse<String> response = new GeneralResponse<>("success", 0, "");
@@ -148,6 +158,7 @@ public class FlightController {
             @ApiResponse(code = 404, message = "flight not found", response = GeneralResponse.class),
             @ApiResponse(code = 500, message = "Server side failure")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping ("delete/{ID}")
     public ResponseEntity<GeneralResponse<String>> deleteFlight(@ApiParam(value = "ID of Flight to be deleted", required = true) @PathVariable Long ID) {
         GeneralResponse<String> response = new GeneralResponse<>("success", 0, "");

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
@@ -74,6 +75,7 @@ public class AirportController {
             @ApiResponse(code = 403, message = "authorization failed"),
             @ApiResponse(code = 500, message = "Server side failure")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("add")
     public ResponseEntity<GeneralResponse<Airport>> addAirport(@ApiParam(value = "New Airport Object", required = true) @RequestBody AirportInfoDto airportInfoDto) {
         GeneralResponse<Airport> response = new GeneralResponse<>("success", 0, null);
@@ -93,6 +95,7 @@ public class AirportController {
             @ApiResponse(code = 404, message = "airport not found", response = GeneralResponse.class),
             @ApiResponse(code = 500, message = "Server side failure")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("update")
     public ResponseEntity<GeneralResponse<String>> updateAirport(@ApiParam(value = "Updated Airport Object", required = true) @RequestBody AirportUpdateDto airportUpdateDto) {
         GeneralResponse<String> response = new GeneralResponse<>("success", 0, null);
@@ -116,6 +119,7 @@ public class AirportController {
             @ApiResponse(code = 404, message = "airport not found", response = GeneralResponse.class),
             @ApiResponse(code = 500, message = "Server side failure")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping ("delete/{ID}")
     public ResponseEntity<GeneralResponse<String>> deleteAirport(@ApiParam(value = "ID of Airport to be deleted", required = true) @PathVariable Long ID) {
         GeneralResponse<String> response = new GeneralResponse<>("success", 0, null);

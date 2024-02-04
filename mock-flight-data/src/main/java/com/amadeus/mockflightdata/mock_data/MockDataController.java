@@ -35,7 +35,7 @@ public class MockDataController {
         Long destinationID;
         do {
             destinationID = ThreadLocalRandom.current().nextLong(1, airport);
-        } while(!destinationID.equals(originID));
+        } while(destinationID.equals(originID));
 
         double uglyPrice = ThreadLocalRandom.current().nextDouble(1000, 20000);
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
