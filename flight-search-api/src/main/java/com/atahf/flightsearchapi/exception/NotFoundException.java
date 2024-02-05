@@ -1,4 +1,4 @@
-package com.atahf.flightsearchapi.utils;
+package com.atahf.flightsearchapi.exception;
 
 public class NotFoundException extends Exception {
     public NotFoundException() {

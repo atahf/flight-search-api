@@ -1,4 +1,4 @@
-package com.atahf.flightsearchapi.utils;
+package com.atahf.flightsearchapi.exception;
 
 public class UserExistsException extends Exception {
     public UserExistsException() {

@@ -1,15 +1,14 @@
 package com.atahf.flightsearchapi.user;
 
 import com.atahf.flightsearchapi.user.UserDto.UserInfoDto;
-import com.atahf.flightsearchapi.utils.NotFoundException;
-import com.atahf.flightsearchapi.utils.UserExistsException;
+import com.atahf.flightsearchapi.exception.NotFoundException;
+import com.atahf.flightsearchapi.exception.UserExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.Authentication;
 
 import org.springframework.transaction.annotation.Transactional;
 

@@ -2,7 +2,7 @@ package com.atahf.flightsearchapi.airport;
 
 import com.atahf.flightsearchapi.airport.AirportDto.*;
 import com.atahf.flightsearchapi.utils.GeneralResponse;
-import com.atahf.flightsearchapi.utils.NotFoundException;
+import com.atahf.flightsearchapi.exception.NotFoundException;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

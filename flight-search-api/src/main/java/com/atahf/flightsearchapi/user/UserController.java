@@ -3,8 +3,8 @@ package com.atahf.flightsearchapi.user;
 import com.atahf.flightsearchapi.user.UserDto.*;
 
 import com.atahf.flightsearchapi.utils.GeneralResponse;
-import com.atahf.flightsearchapi.utils.NotFoundException;
-import com.atahf.flightsearchapi.utils.UserExistsException;
+import com.atahf.flightsearchapi.exception.NotFoundException;
+import com.atahf.flightsearchapi.exception.UserExistsException;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

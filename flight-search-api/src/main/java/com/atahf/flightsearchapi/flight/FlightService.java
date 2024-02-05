@@ -7,8 +7,8 @@ import com.atahf.flightsearchapi.flight.FlightDto.FlightUpdateDto;
 import com.atahf.flightsearchapi.flight.FlightDto.NewFlightDto;
 import com.atahf.flightsearchapi.flight.FlightDto.RoundTripDto;
 import com.atahf.flightsearchapi.flight.FlightDto.SingleTripDto;
-import com.atahf.flightsearchapi.utils.NotFoundException;
-import com.atahf.flightsearchapi.utils.SameOriginAndDestinationException;
+import com.atahf.flightsearchapi.exception.NotFoundException;
+import com.atahf.flightsearchapi.exception.SameOriginAndDestinationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

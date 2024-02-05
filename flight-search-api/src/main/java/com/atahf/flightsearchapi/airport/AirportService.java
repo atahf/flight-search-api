@@ -2,7 +2,7 @@ package com.atahf.flightsearchapi.airport;
 
 import com.atahf.flightsearchapi.airport.AirportDto.AirportUpdateDto;
 import com.atahf.flightsearchapi.airport.AirportDto.AirportInfoDto;
-import com.atahf.flightsearchapi.utils.NotFoundException;
+import com.atahf.flightsearchapi.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
