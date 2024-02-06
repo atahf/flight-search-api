@@ -219,7 +219,7 @@ public class FlightController {
         }
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 0 ? * *")
     public void fetchFlights() {
         System.out.println("Fetching Flights at " + LocalDateTime.now().toString().replace('T', ' '));
 
